@@ -1,0 +1,51 @@
+body {
+  font-family: "Arial", sans-serif;
+}
+
+.digits {
+  font-size: 200px;
+}
+
+.unit {
+  font-size: 100px;
+  margin: 0 10px;
+}
+
+div {
+  text-align: center;
+}
+
+#motion {
+  font-size: 50px;
+}
+
+#progress-bar-wrapper span {
+  display: inline-block;
+  height: 10px;
+}
+
+#progress-bar {
+  background: #ddd;
+  width: 800px;
+  text-align: left;
+  position: relative;
+}
+
+#progress {
+  background: #aaa;
+  position: absolute;
+  animation-name: progressbar;
+  animation-play-state: paused;
+  animation-duration: 10s;
+  animation-timing-function: linear;
+  width: 100%;
+}
+
+@keyframes progressbar {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
