@@ -12,7 +12,7 @@ var eventEmitter = new events.EventEmitter();
 var websocket = require('websocket').server;
 
 remoteServer = new websocket({
-  httpServer: http.createServer().listen(8001)
+  httpServer: http.createServer().listen(8881)
 });
 
 remoteServer.on('request', function(request){
@@ -26,7 +26,7 @@ remoteServer.on('request', function(request){
 });
 
 timerServer = new websocket({
-  httpServer: http.createServer().listen(8002)
+  httpServer: http.createServer().listen(8882)
 });
 
 timerServer.on('request', function(request){
