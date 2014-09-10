@@ -4,7 +4,7 @@ var http = require('http');
 
 var app = connect();
 app.use(serveStatic(__dirname));
-var server = http.createServer(app).listen(8000);
+var server = http.createServer(app).listen(8880);
 
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
