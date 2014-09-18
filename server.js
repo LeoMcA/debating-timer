@@ -4,7 +4,7 @@ var http = require('http');
 
 var app = connect();
 app.use(serveStatic(__dirname));
-var server = http.createServer(app).listen(80);
+var server = http.createServer(app).listen(8080);
 
 var io = require('socket.io')(server);
 
