@@ -7,16 +7,17 @@
 
     <button id="play-pause">Play/Pause</button><button id="reset">Reset</button>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script>
 
-     var socket = new WebSocket('ws://'+window.location.hostname+':8818', 'remote-protocol');
+     var socket = io('http://'+window.location.hostname);
 
      document.querySelector('#play-pause').onclick = function(){
-      socket.send('play-pause');
+      socket.emit('play-pause');
      }
 
      document.querySelector('#reset').onclick = function(){
-      socket.send('reset');
+      socket.emit('reset');
      }
 
     </script>

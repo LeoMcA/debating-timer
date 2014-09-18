@@ -100,8 +100,11 @@ $('#set-motion').onclick = function(){
   $('#motion').textContent = window.prompt('Enter a motion:');
 }
 
-var socket = new WebSocket('ws://'+window.location.hostname+':8828', 'timer-protocol');
-socket.onmessage = function(e){
-  if(e.data == 'play-pause') $('#play-pause').click();
-  else if(e.data == 'reset') $('#reset').click();
-}
+var socket = io('http://'+window.location.hostname);
+socket.on('play-pause', function(){
+  $('#play-pause').click();
+});
+socket.on('reset', function(){
+  $('#reset').click();
+});
+
