@@ -26,21 +26,28 @@ function restartAnimation(){
   elm.parentNode.replaceChild(newone, elm);
 }
 
-function Timer(duration){
+function Timer(duration, alarms){
   this.initduration = duration;
   this.duration = duration;
   this.durationms = duration * 1000;
+  this.alarmno = 0;
+  if(alarms){
+    this.alarms = alarms;
+  } else {
+    this.alarms = [];
+  }
   $('#progress').style.animationDuration = duration + 's';
   updateTimer(this.duration);
 }
 
-var timer = new Timer(5 * 60);
+var timer = new Timer(5 * 60, [4 * 60, 1 * 60]);
 
 Timer.prototype.play = function(){
   if(this.nowms == 'reset'){
     restartAnimation();
     this.duration = this.initduration;
     this.durationms = this.duration * 1000;
+    this.alarmno = 0;
   } else if(this.nowms < this.durationms) {
     this.duration = this.now;
     this.durationms = this.nowms;
@@ -53,6 +60,11 @@ Timer.prototype.play = function(){
   this.interval = setInterval(function() {
     that.nowms = that.durationms-(new Date().getTime()-that.start);
     that.now = Math.ceil(that.nowms/1000);
+    if(that.nowms <= that.alarms[that.alarmno] * 1000){  
+      //alert("alarm, yo");
+      // TODO: do something to signify the alarm, like play a sound
+      that.alarmno++;
+    }
     if(that.nowms <= 0) {
       updateTimer(that.now * -1, true);
       $('#progress').style.animationPlayState = 'paused';
@@ -107,4 +119,3 @@ socket.on('play-pause', function(){
 socket.on('reset', function(){
   $('#reset').click();
 });
-
