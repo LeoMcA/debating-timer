@@ -17,7 +17,10 @@
       </div>
 
       <div class="progress">
-        <div class="progress-bar"></div>
+        <div id="finished-progress" class="progress-bar progress-bar-danger"></div>
+        <div id="first-protected-progress" class="progress-bar progress-bar-warning"></div>
+        <div id="main-progress" class="progress-bar progress-bar-success"></div>
+        <div id="last-protected-progress" class="progress-bar progress-bar-warning"></div>
       </div>
 
       <div class="row">
@@ -40,7 +43,6 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" title="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="myModalLabel">Settings</h4>
           </div>
           <div class="modal-body">
@@ -63,6 +65,21 @@
                   <div class="input-group">
                     <span class="input-group-addon">Seconds</span>
                     <input type="number" min="0" max="59" step="1" class="form-control" id="timer-seconds-input" value="00">
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="protected-minutes-input" class="col-sm-2 control-label">Protected</label>
+                <div class="col-sm-5">
+                  <div class="input-group">
+                    <span class="input-group-addon">Minutes</span>
+                    <input type="number" min="0" step="1" class="form-control" id="protected-minutes-input" value="01">
+                  </div>
+                </div>
+                <div class="col-sm-5">
+                  <div class="input-group">
+                    <span class="input-group-addon">Seconds</span>
+                    <input type="number" min="0" max="59" step="1" class="form-control" id="protected-seconds-input" value="00">
                   </div>
                 </div>
               </div>

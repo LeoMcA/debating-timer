@@ -1,4 +1,4 @@
-function updateTimer(timeleft, negative) {
+function updateTimer(timeleft, negative){
   var minutes = Math.floor(timeleft/60);
   var seconds = timeleft % 60;
 
@@ -9,8 +9,14 @@ function updateTimer(timeleft, negative) {
   $('#seconds').text(('0' + seconds).slice(-2));
 }
 
-function restartAnimation(){
-  $('.progress-bar').replaceWith($('.progress-bar').clone());
+function updateProgressbar(duration, timeleft, alarms){
+  if(timeleft >= 0){
+    if(timeleft >= alarms[0]*1000) $('#first-protected-progress').css('width', (duration - timeleft)*100/duration + '%');
+    else if(timeleft <= alarms[1]*1000) $('#last-protected-progress').css('width', (alarms[1]*1000 - timeleft)*100/duration + '%');
+    else $('#main-progress').css('width', (alarms[0]*1000 - timeleft)*100/duration +  '%');
+  } else {
+    $('#finished-progress').css('width', '100%');
+  }
 }
 
 function changePlayPause(to){
@@ -27,6 +33,7 @@ function changePlayPause(to){
 
 function Timer(duration, alarms){
   this.initduration = duration;
+  this.initdurationms = duration * 1000;
   this.duration = duration;
   this.durationms = duration * 1000;
   this.alarmno = 0;
@@ -35,15 +42,15 @@ function Timer(duration, alarms){
   } else {
     this.alarms = [];
   }
-  $('.progress-bar').css('animation-duration', duration + 's');
   updateTimer(this.duration);
+  updateProgressbar(this.initdurationms, this.durationms, this.alarms);
+  $('#settings').removeAttr('disabled');
 }
 
 var timer = new Timer(5 * 60, [4 * 60, 1 * 60]);
 
 Timer.prototype.play = function(){
   if(this.nowms == 'reset'){
-    restartAnimation();
     this.duration = this.initduration;
     this.durationms = this.duration * 1000;
     this.alarmno = 0;
@@ -60,16 +67,16 @@ Timer.prototype.play = function(){
     that.nowms = that.durationms-(new Date().getTime()-that.start);
     that.now = Math.ceil(that.nowms/1000);
     if(that.nowms <= that.alarms[that.alarmno] * 1000){
-      //alert("alarm, yo");
       // TODO: do something to signify the alarm, like play a sound
       that.alarmno++;
     }
     if(that.nowms <= 0) {
       updateTimer(that.now * -1, true);
-      $('.progress-bar').css('animation-play-state', 'paused');
+      updateProgressbar(that.initdurationms, that.nowms, that.alarms);
     }
     else {
       updateTimer(that.now);
+      updateProgressbar(that.initdurationms, that.nowms, that.alarms);
     }
   },1);
 }
@@ -79,11 +86,10 @@ Timer.prototype.pause = function(){
 }
 
 Timer.prototype.reset = function(){
-  restartAnimation();
+  $('.progress-bar').css('width', '0');
   window.clearInterval(this.interval);
   updateTimer(this.initduration);
   this.nowms = 'reset';
-  $('.progress-bar').css('animation-play-state', 'paused');
   changePlayPause('play');
   $('#settings').removeAttr('disabled');
 }
@@ -91,12 +97,10 @@ Timer.prototype.reset = function(){
 $('#play-pause').click(function(){
   if($(this).attr('title') == 'Play'){
     timer.play();
-    $('.progress-bar').css('animation-play-state', 'running');
     changePlayPause('pause');
     $('#settings').attr('disabled', 'disabled');
   } else {
     timer.pause();
-    $('.progress-bar').css('animation-play-state', 'paused');
     changePlayPause('play');
   }
 });
@@ -107,7 +111,10 @@ $('#reset').click(function(){
 
 $('#settings-modal').on('hide.bs.modal', function(){
   $('#motion').text($('#motion-input').val());
-  timer = new Timer(Math.floor(parseInt($('#timer-minutes-input').val(), 10) * 60 + parseInt($('#timer-seconds-input').val() ,10)));
+  var duration = Math.floor(parseInt($('#timer-minutes-input').val(), 10) * 60 + parseInt($('#timer-seconds-input').val() ,10));
+  var protectedLength = Math.floor(parseInt($('#protected-minutes-input').val(), 10) * 60 + parseInt($('#protected-seconds-input').val() ,10));
+  var alarms = [duration - protectedLength, protectedLength];
+  timer = new Timer(duration, alarms);
 });
 
 var socket = io('http://'+window.location.hostname);

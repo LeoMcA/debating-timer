@@ -30,18 +30,5 @@ body {
 }
 
 .progress-bar {
-  animation-name: progressbar;
-  animation-play-state: paused;
-  animation-timing-function: linear;
   transition: none;
-  width: 100%;
-}
-
-@keyframes progressbar {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
 }
