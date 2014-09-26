@@ -153,6 +153,35 @@ $('#settings-modal').on('hide.bs.modal', function(){
   centreVertically();
 });
 
+$('#fullscreen').click(function(){
+  if($(this).attr('title') == 'Fullscreen'){
+    $(this).button('toggle');
+    $(this).attr('title', 'Exit Fullscreen');
+    var elem = $('#fullscreen-container').get(0);
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    }
+  } else {
+    $(this).button('toggle');
+    $(this).attr('title', 'Fullscreen');
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.msExitFullscreen) {
+      document.msExitFullscreen();
+    } else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+  }
+});
+
 var socket = io('http://'+window.location.hostname);
 socket.on('play-pause', function(){
   $('#play-pause').click();

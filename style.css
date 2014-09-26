@@ -2,6 +2,12 @@ body {
   font-family: "Arial", sans-serif;
 }
 
+#fullscreen-container {
+  background: #fff;
+  width: 100%;
+  height: 100%;
+}
+
 #timer {
   margin: 25px 0;
 }
