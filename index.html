@@ -18,6 +18,7 @@
         </div>
 
         <div class="progress">
+          <div id="finished-progress-striped" class="progress-bar progress-bar-danger progress-bar-striped active"></div>
           <div id="finished-progress" class="progress-bar progress-bar-danger"></div>
           <div id="first-protected-progress" class="progress-bar progress-bar-warning"></div>
           <div id="main-progress" class="progress-bar progress-bar-success"></div>
@@ -57,6 +58,7 @@
                     <input type="text" class="form-control" id="motion-input" placeholder="Motion">
                   </div>
                 </div>
+
                 <div class="form-group">
                   <label for="timer-minutes-input" class="col-sm-2 control-label">Timer</label>
                   <div class="col-sm-5">
@@ -72,6 +74,7 @@
                     </div>
                   </div>
                 </div>
+
                 <div class="form-group">
                   <label for="protected-minutes-input" class="col-sm-2 control-label">Protected</label>
                   <div class="col-sm-5">
@@ -84,6 +87,22 @@
                     <div class="input-group">
                       <span class="input-group-addon">Seconds</span>
                       <input type="number" min="0" max="59" step="1" class="form-control" id="protected-seconds-input" value="00">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="grace-minutes-input" class="col-sm-2 control-label">Grace</label>
+                  <div class="col-sm-5">
+                    <div class="input-group">
+                      <span class="input-group-addon">Minutes</span>
+                      <input type="number" min="0" step="1" class="form-control" id="grace-minutes-input" value="00">
+                    </div>
+                  </div>
+                  <div class="col-sm-5">
+                    <div class="input-group">
+                      <span class="input-group-addon">Seconds</span>
+                      <input type="number" min="0" max="59" step="1" class="form-control" id="grace-seconds-input" value="15">
                     </div>
                   </div>
                 </div>

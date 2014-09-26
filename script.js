@@ -18,8 +18,8 @@ function updateTimer(timeleft, negative){
   var minutes = Math.floor(timeleft/60);
   var seconds = timeleft % 60;
 
-  if(negative) $('#timer').css('color', '#c00');
-  else $('#timer').css('color', '#333');
+  if(negative && !($('#timer').css('color') == '#c00' || $('#timer').css('color') == '#cc0000' || $('#timer').css('color') == 'rgb(204, 0, 0)')) $('#timer').css('color', '#c00');
+  else if(!negative && !($('#timer').css('color') == '#333' || $('#timer').css('color') == '#333333' || $('#timer').css('color') == 'rgb(51, 51, 51)')) $('#timer').css('color', '#333');
 
   $('#minutes').text(minutes);
   $('#seconds').text(('0' + seconds).slice(-2));
@@ -30,8 +30,11 @@ function updateProgressbar(duration, timeleft, alarms){
     if(timeleft >= alarms[0]*1000) $('#first-protected-progress').css('width', (duration - timeleft)*100/duration + '%');
     else if(timeleft <= alarms[1]*1000) $('#last-protected-progress').css('width', (alarms[1]*1000 - timeleft)*100/duration + '%');
     else $('#main-progress').css('width', (alarms[0]*1000 - timeleft)*100/duration +  '%');
+  } else if(timeleft > alarms[3]*1000) {
+    $('#finished-progress-striped').css('width', timeleft/(alarms[3]*10) + '%');
+    $('#finished-progress').css('width', 100 - timeleft/(alarms[3]*10) + '%');
   } else {
-    $('#finished-progress').css('width', '100%');
+    if($('#finished-progress-striped').get(0).style.width !== '100%') $('#finished-progress-striped').css('width', '100%');
   }
 }
 
@@ -71,7 +74,7 @@ function Timer(duration, alarms){
   $('#settings').removeAttr('disabled');
 }
 
-var timer = new Timer(5 * 60, [4 * 60, 1 * 60, 0]);
+var timer = new Timer(5 * 60, [4 * 60, 1 * 60, 0, -15]);
 
 Timer.prototype.play = function(){
   if(this.nowms == 'reset'){
@@ -155,7 +158,8 @@ $('#settings-modal').on('hide.bs.modal', function(){
   $('#motion').text($('#motion-input').val());
   var duration = Math.floor(parseInt($('#timer-minutes-input').val(), 10) * 60 + parseInt($('#timer-seconds-input').val() ,10));
   var protectedLength = Math.floor(parseInt($('#protected-minutes-input').val(), 10) * 60 + parseInt($('#protected-seconds-input').val() ,10));
-  var alarms = [duration - protectedLength, protectedLength, 0];
+  var grace = -1 * Math.floor(parseInt($('#grace-minutes-input').val(), 10) * 60 + parseInt($('#grace-seconds-input').val() ,10))
+  var alarms = [duration - protectedLength, protectedLength, 0, grace];
   timer = new Timer(duration, alarms);
   centreVertically();
 });
