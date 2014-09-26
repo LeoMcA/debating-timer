@@ -38,6 +38,16 @@ function updateProgressbar(duration, timeleft, alarms){
   }
 }
 
+function updateFlashing(timeleft, alarms){
+  if(timeleft < alarms[3]*1000 && $('body').css('animation-iteration-count') !== 'infinite'){
+    $('body').css('animation-iteration-count', 'infinite');
+    $('#fullscreen-container').css('animation-iteration-count', 'infinite');
+  } else if(timeleft == 'reset' && $('body').css('animation-iteration-count') == 'infinite'){
+    $('body').css('animation-iteration-count', 0);
+    $('#fullscreen-container').css('animation-iteration-count', 0);
+  }
+}
+
 function changePlayPause(to){
   if(to == 'play'){
     $('#play-pause').attr('title', 'Play');
@@ -100,6 +110,7 @@ Timer.prototype.play = function(){
     if(that.nowms <= 0) {
       updateTimer(that.now * -1, true);
       updateProgressbar(that.initdurationms, that.nowms, that.alarms);
+      updateFlashing(that.nowms, that.alarms);
     }
     else {
       updateTimer(that.now);
@@ -117,6 +128,7 @@ Timer.prototype.reset = function(){
   window.clearInterval(this.interval);
   updateTimer(this.initduration);
   this.nowms = 'reset';
+  updateFlashing(this.nowms, this.alarms);
   changePlayPause('play');
   $('#settings').removeAttr('disabled');
 }
