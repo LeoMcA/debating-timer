@@ -1,3 +1,12 @@
+$(window).resize(centreVertically);
+
+function centreVertically(){
+  var margin = ($(window).height() - $('.progress').outerHeight())/2 + $('.container').offset().top - $('.progress').offset().top;
+  if(margin < 0) margin = 0;
+  $('.container').css('margin-top', margin);
+}
+centreVertically();
+
 function updateTimer(timeleft, negative){
   var minutes = Math.floor(timeleft/60);
   var seconds = timeleft % 60;
@@ -141,6 +150,7 @@ $('#settings-modal').on('hide.bs.modal', function(){
   var protectedLength = Math.floor(parseInt($('#protected-minutes-input').val(), 10) * 60 + parseInt($('#protected-seconds-input').val() ,10));
   var alarms = [duration - protectedLength, protectedLength, 0];
   timer = new Timer(duration, alarms);
+  centreVertically();
 });
 
 var socket = io('http://'+window.location.hostname);
