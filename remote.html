@@ -1,43 +1,18 @@
 <!doctype html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, user-scalable=false;">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <title>Debating Timer Remote</title>
-    <style>
-      body {
-        margin: 0;
-        background: #000;
-      }
-
-      button {
-        display: block;
-        border: none;
-        background: #fff;
-        padding: 0;
-        margin: 20px auto;
-        border-radius: 25px;
-        box-sizing: border-box;
-        width: 90%;
-        max-width: 300px;
-        height: 50px;
-      }
-
-      button:active {
-        color: #fff;
-      }
-
-      #play-pause {
-        background: #77f;
-      }
-
-      #reset {
-        background: #f33;
-      }
-    </style>
   </head>
   <body>
 
-    <button id="play-pause">Play/Pause</button><button id="reset">Reset</button>
+    <div class="container" style="margin-top: 15px;">
+
+      <button id="play-pause" class="btn btn-default btn-lg btn-block" title="Play"><span class="glyphicon glyphicon-play"></span><span class="glyphicon glyphicon-pause"></span></button>
+      <button id="reset" class="btn btn-default btn-lg btn-block" title="Reset"><span class="glyphicon glyphicon-refresh"></span></button>
+
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>

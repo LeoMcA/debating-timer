@@ -2,42 +2,38 @@ body {
   font-family: "Arial", sans-serif;
 }
 
+#timer {
+  margin: 25px 0;
+}
+
 .digits {
   font-size: 200px;
+  line-height: 200px;
 }
 
 .unit {
   font-size: 100px;
+  line-height: 100px;
   margin: 0 10px;
-}
-
-div {
-  text-align: center;
 }
 
 #motion {
   font-size: 50px;
 }
 
-#progress-bar-wrapper span {
-  display: inline-block;
-  height: 10px;
+#motion, #motion-controls, #timer {
+  text-align: center;
 }
 
-#progress-bar {
-  background: #ddd;
-  width: 800px;
-  text-align: left;
-  position: relative;
+.progress {
+  margin: 25px auto;
 }
 
-#progress {
-  background: #aaa;
-  position: absolute;
+.progress-bar {
   animation-name: progressbar;
   animation-play-state: paused;
-  animation-duration: 10s;
   animation-timing-function: linear;
+  transition: none;
   width: 100%;
 }
 

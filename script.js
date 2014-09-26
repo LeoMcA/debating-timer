@@ -6,8 +6,8 @@ function updateTimer(timeleft, negative) {
   var minutes = Math.floor(timeleft/60);
   var seconds = timeleft % 60;
 
-  if(negative) $('#timer').style.color = 'red';
-  else $('#timer').style.color = 'black';
+  if(negative) $('#timer').style.color = '#c00';
+  else $('#timer').style.color = '#333';
 
   $('#minutes').textContent = minutes;
   $('#seconds').textContent = ('0' + seconds).slice(-2);
@@ -21,9 +21,21 @@ function updateTimer(timeleft, negative) {
     } */
 
 function restartAnimation(){
-  var elm = $('#progress');
+  var elm = $('.progress-bar');
   var newone = elm.cloneNode(true);
   elm.parentNode.replaceChild(newone, elm);
+}
+
+function changePlayPause(to){
+  if(to == 'play'){
+    $('#play-pause').setAttribute('title', 'Play');
+    $('#play-pause .glyphicon-pause').style.display = 'none';
+    $('#play-pause .glyphicon-play').style.display = 'inline-block';
+  } else if(to == 'pause'){
+    $('#play-pause').setAttribute('title', 'Pause');
+    $('#play-pause .glyphicon-play').style.display = 'none';
+    $('#play-pause .glyphicon-pause').style.display = 'inline-block';
+  }
 }
 
 function Timer(duration, alarms){
@@ -36,7 +48,7 @@ function Timer(duration, alarms){
   } else {
     this.alarms = [];
   }
-  $('#progress').style.animationDuration = duration + 's';
+  $('.progress-bar').style.animationDuration = duration + 's';
   updateTimer(this.duration);
 }
 
@@ -60,14 +72,14 @@ Timer.prototype.play = function(){
   this.interval = setInterval(function() {
     that.nowms = that.durationms-(new Date().getTime()-that.start);
     that.now = Math.ceil(that.nowms/1000);
-    if(that.nowms <= that.alarms[that.alarmno] * 1000){  
+    if(that.nowms <= that.alarms[that.alarmno] * 1000){
       //alert("alarm, yo");
       // TODO: do something to signify the alarm, like play a sound
       that.alarmno++;
     }
     if(that.nowms <= 0) {
       updateTimer(that.now * -1, true);
-      $('#progress').style.animationPlayState = 'paused';
+      $('.progress-bar').style.animationPlayState = 'paused';
     }
     else {
       updateTimer(that.now);
@@ -84,19 +96,19 @@ Timer.prototype.reset = function(){
   window.clearInterval(this.interval);
   updateTimer(this.initduration);
   this.nowms = 'reset';
-  $('#progress').style.animationPlayState = 'paused';
-  $('#play-pause').textContent = 'Play';
+  $('.progress-bar').style.animationPlayState = 'paused';
+  changePlayPause('play');
 }
 
 $('#play-pause').onclick = function(){
-  if(this.textContent == 'Play'){
+  if(this.getAttribute('title') == 'Play'){
     timer.play();
-    $('#progress').style.animationPlayState = 'running';
-    this.textContent = 'Pause';
+    $('.progress-bar').style.animationPlayState = 'running';
+    changePlayPause('pause');
   } else {
     timer.pause();
-    $('#progress').style.animationPlayState = 'paused';
-    this.textContent = 'Play';
+    $('.progress-bar').style.animationPlayState = 'paused';
+    changePlayPause('play');
   }
 }
 
