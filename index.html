@@ -10,10 +10,7 @@
 
     <div class="container">
 
-      <div id="motion">Motion</div>
-      <div id="motion-controls">
-        <button id="set-motion" class="btn btn-default" title="Set"><span class="glyphicon glyphicon-cog"></span></button>
-      </div>
+      <div id="motion"></div>
 
       <div id="timer">
         <span id="minutes" class="digits">0</span><span class="unit">m</span><span id="seconds" class="digits">00</span><span class="unit">s</span>
@@ -32,11 +29,50 @@
         </div>
         <div class="col-xs-6">
           <div class="btn-group pull-right">
-            <button id="set-timer" class="btn btn-default" title="Set"><span class="glyphicon glyphicon-cog"></span></button>
+            <button id="settings" class="btn btn-default" title="Settings" data-toggle="modal" data-target="#settings-modal"><span class="glyphicon glyphicon-cog"></span></button>
           </div>
         </div>
       </div>
 
+    </div>
+
+    <div class="modal fade" id="settings-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" title="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Settings</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" role="form">
+              <div class="form-group">
+                <label for="motion-input" class="col-sm-2 control-label">Motion</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="motion-input" placeholder="Motion">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="timer-minutes-input" class="col-sm-2 control-label">Timer</label>
+                <div class="col-sm-5">
+                  <div class="input-group">
+                    <span class="input-group-addon">Minutes</span>
+                    <input type="number" min="0" step="1" class="form-control" id="timer-minutes-input" value="05">
+                  </div>
+                </div>
+                <div class="col-sm-5">
+                  <div class="input-group">
+                    <span class="input-group-addon">Seconds</span>
+                    <input type="number" min="0" max="59" step="1" class="form-control" id="timer-seconds-input" value="00">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>

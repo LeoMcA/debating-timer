@@ -85,6 +85,7 @@ Timer.prototype.reset = function(){
   this.nowms = 'reset';
   $('.progress-bar').css('animation-play-state', 'paused');
   changePlayPause('play');
+  $('#settings').removeAttr('disabled');
 }
 
 $('#play-pause').click(function(){
@@ -92,6 +93,7 @@ $('#play-pause').click(function(){
     timer.play();
     $('.progress-bar').css('animation-play-state', 'running');
     changePlayPause('pause');
+    $('#settings').attr('disabled', 'disabled');
   } else {
     timer.pause();
     $('.progress-bar').css('animation-play-state', 'paused');
@@ -103,12 +105,9 @@ $('#reset').click(function(){
   timer.reset();
 });
 
-$('#set-timer').click(function(){
-  timer = new Timer(Math.floor(window.prompt('Enter a duration in seconds:')));
-});
-
-$('#set-motion').click(function(){
-  $('#motion').text(window.prompt('Enter a motion:'));
+$('#settings-modal').on('hide.bs.modal', function(){
+  $('#motion').text($('#motion-input').val());
+  timer = new Timer(Math.floor(parseInt($('#timer-minutes-input').val(), 10) * 60 + parseInt($('#timer-seconds-input').val() ,10)));
 });
 
 var socket = io('http://'+window.location.hostname);
