@@ -1,11 +1,18 @@
-$(window).resize(centreVertically);
-
 function centreVertically(){
   var margin = ($(window).height() - $('.progress').outerHeight())/2 + $('.container').offset().top - $('.progress').offset().top;
   if(margin < 0) margin = 0;
   $('.container').css('margin-top', margin);
 }
 centreVertically();
+
+$(window).resize(centreVertically);
+
+function centreHorizontally(){
+  $('#minutes').css('padding-left', $('.unit:last').outerWidth() + 20);
+}
+centreHorizontally();
+
+$(window).resize(centreHorizontally);
 
 function updateTimer(timeleft, negative){
   var minutes = Math.floor(timeleft/60);
@@ -133,13 +140,13 @@ $('#test-bell').click(function(){
 $('#mute').click(function(){
   if($(this).attr('title') == 'Mute'){
     $('audio').attr('muted', 'muted');
-    $('#mute').attr('title', 'Unmute');
-    $('#mute').button('toggle');
+    $(this).attr('title', 'Unmute');
+    $(this).button('toggle');
     $('#test-bell').attr('disabled', 'disabled');
   } else {
     $('audio').removeAttr('muted');
-    $('#mute').attr('title', 'Mute');
-    $('#mute').button('toggle');
+    $(this).attr('title', 'Mute');
+    $(this).button('toggle');
     $('#test-bell').removeAttr('disabled');
   }
 });
