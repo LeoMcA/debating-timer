@@ -53,7 +53,7 @@ function changePlayPause(to){
 function ding(){
   if(!$('audio').attr('muted')) {
     $('audio').get(0).pause();
-    $('audio').get(0).fastSeek(0);
+    $('audio').get(0).currentTime = 0;
     $('audio').get(0).play();
   }
 }
