@@ -31,6 +31,14 @@ function changePlayPause(to){
   }
 }
 
+function ding(){
+  if(!$('audio').attr('muted')) {
+    $('audio').get(0).pause();
+    $('audio').get(0).fastSeek(0);
+    $('audio').get(0).play();
+  }
+}
+
 function Timer(duration, alarms){
   this.initduration = duration;
   this.initdurationms = duration * 1000;
@@ -47,7 +55,7 @@ function Timer(duration, alarms){
   $('#settings').removeAttr('disabled');
 }
 
-var timer = new Timer(5 * 60, [4 * 60, 1 * 60]);
+var timer = new Timer(5 * 60, [4 * 60, 1 * 60, 0]);
 
 Timer.prototype.play = function(){
   if(this.nowms == 'reset'){
@@ -67,7 +75,7 @@ Timer.prototype.play = function(){
     that.nowms = that.durationms-(new Date().getTime()-that.start);
     that.now = Math.ceil(that.nowms/1000);
     if(that.nowms <= that.alarms[that.alarmno] * 1000){
-      // TODO: do something to signify the alarm, like play a sound
+      ding();
       that.alarmno++;
     }
     if(that.nowms <= 0) {
@@ -109,11 +117,29 @@ $('#reset').click(function(){
   timer.reset();
 });
 
+$('#test-bell').click(function(){
+  ding();
+});
+
+$('#mute').click(function(){
+  if($(this).attr('title') == 'Mute'){
+    $('audio').attr('muted', 'muted');
+    $('#mute').attr('title', 'Unmute');
+    $('#mute').button('toggle');
+    $('#test-bell').attr('disabled', 'disabled');
+  } else {
+    $('audio').removeAttr('muted');
+    $('#mute').attr('title', 'Mute');
+    $('#mute').button('toggle');
+    $('#test-bell').removeAttr('disabled');
+  }
+});
+
 $('#settings-modal').on('hide.bs.modal', function(){
   $('#motion').text($('#motion-input').val());
   var duration = Math.floor(parseInt($('#timer-minutes-input').val(), 10) * 60 + parseInt($('#timer-seconds-input').val() ,10));
   var protectedLength = Math.floor(parseInt($('#protected-minutes-input').val(), 10) * 60 + parseInt($('#protected-seconds-input').val() ,10));
-  var alarms = [duration - protectedLength, protectedLength];
+  var alarms = [duration - protectedLength, protectedLength, 0];
   timer = new Timer(duration, alarms);
 });
 

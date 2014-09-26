@@ -32,6 +32,8 @@
         </div>
         <div class="col-xs-6">
           <div class="btn-group pull-right">
+            <button id="test-bell" class="btn btn-default" title="Test Bell"><span class="glyphicon glyphicon-bell"></span></button>
+            <button id="mute" class="btn btn-default" title="Mute"><span class="glyphicon glyphicon-volume-off"></span></button>
             <button id="settings" class="btn btn-default" title="Settings" data-toggle="modal" data-target="#settings-modal"><span class="glyphicon glyphicon-cog"></span></button>
           </div>
         </div>
@@ -91,6 +93,12 @@
         </div>
       </div>
     </div>
+
+    <audio>
+      <source src="audio/ding.ogg">
+      <source src="audio/ding.mp3">
+      <source src="audio/ding.wav">
+    </audio>
 
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
