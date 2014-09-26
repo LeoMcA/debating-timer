@@ -1,40 +1,27 @@
-function $ (selector) {
-  return document.querySelector(selector);
-}
-
 function updateTimer(timeleft, negative) {
   var minutes = Math.floor(timeleft/60);
   var seconds = timeleft % 60;
 
-  if(negative) $('#timer').style.color = '#c00';
-  else $('#timer').style.color = '#333';
+  if(negative) $('#timer').css('color', '#c00');
+  else $('#timer').css('color', '#333');
 
-  $('#minutes').textContent = minutes;
-  $('#seconds').textContent = ('0' + seconds).slice(-2);
+  $('#minutes').text(minutes);
+  $('#seconds').text(('0' + seconds).slice(-2));
 }
 
-/*
-  var alarms = [20000, 10000];
-    if(nowms <= alarms[0]) {
-      navigator.vibrate(1000);
-      alarms.shift();
-    } */
-
 function restartAnimation(){
-  var elm = $('.progress-bar');
-  var newone = elm.cloneNode(true);
-  elm.parentNode.replaceChild(newone, elm);
+  $('.progress-bar').replaceWith($('.progress-bar').clone());
 }
 
 function changePlayPause(to){
   if(to == 'play'){
-    $('#play-pause').setAttribute('title', 'Play');
-    $('#play-pause .glyphicon-pause').style.display = 'none';
-    $('#play-pause .glyphicon-play').style.display = 'inline-block';
+    $('#play-pause').attr('title', 'Play');
+    $('#play-pause .glyphicon-pause').css('display', 'none');
+    $('#play-pause .glyphicon-play').css('display', 'inline-block');
   } else if(to == 'pause'){
-    $('#play-pause').setAttribute('title', 'Pause');
-    $('#play-pause .glyphicon-play').style.display = 'none';
-    $('#play-pause .glyphicon-pause').style.display = 'inline-block';
+    $('#play-pause').attr('title', 'Pause');
+    $('#play-pause .glyphicon-play').css('display', 'none');
+    $('#play-pause .glyphicon-pause').css('display', 'inline-block');
   }
 }
 
@@ -48,7 +35,7 @@ function Timer(duration, alarms){
   } else {
     this.alarms = [];
   }
-  $('.progress-bar').style.animationDuration = duration + 's';
+  $('.progress-bar').css('animation-duration', duration + 's');
   updateTimer(this.duration);
 }
 
@@ -79,7 +66,7 @@ Timer.prototype.play = function(){
     }
     if(that.nowms <= 0) {
       updateTimer(that.now * -1, true);
-      $('.progress-bar').style.animationPlayState = 'paused';
+      $('.progress-bar').css('animation-play-state', 'paused');
     }
     else {
       updateTimer(that.now);
@@ -96,33 +83,33 @@ Timer.prototype.reset = function(){
   window.clearInterval(this.interval);
   updateTimer(this.initduration);
   this.nowms = 'reset';
-  $('.progress-bar').style.animationPlayState = 'paused';
+  $('.progress-bar').css('animation-play-state', 'paused');
   changePlayPause('play');
 }
 
-$('#play-pause').onclick = function(){
-  if(this.getAttribute('title') == 'Play'){
+$('#play-pause').click(function(){
+  if($(this).attr('title') == 'Play'){
     timer.play();
-    $('.progress-bar').style.animationPlayState = 'running';
+    $('.progress-bar').css('animation-play-state', 'running');
     changePlayPause('pause');
   } else {
     timer.pause();
-    $('.progress-bar').style.animationPlayState = 'paused';
+    $('.progress-bar').css('animation-play-state', 'paused');
     changePlayPause('play');
   }
-}
+});
 
-$('#reset').onclick = function(){
+$('#reset').click(function(){
   timer.reset();
-}
+});
 
-$('#set-timer').onclick = function(){
+$('#set-timer').click(function(){
   timer = new Timer(Math.floor(window.prompt('Enter a duration in seconds:')));
-}
+});
 
-$('#set-motion').onclick = function(){
-  $('#motion').textContent = window.prompt('Enter a motion:');
-}
+$('#set-motion').click(function(){
+  $('#motion').text(window.prompt('Enter a motion:'));
+});
 
 var socket = io('http://'+window.location.hostname);
 socket.on('play-pause', function(){
