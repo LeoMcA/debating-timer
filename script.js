@@ -39,12 +39,12 @@ function updateProgressbar(duration, timeleft, alarms){
 }
 
 function updateFlashing(timeleft, alarms){
-  if(timeleft < alarms[3]*1000 && $('body').css('animation-iteration-count') !== 'infinite'){
-    $('body').css('animation-iteration-count', 'infinite');
-    $('#fullscreen-container').css('animation-iteration-count', 'infinite');
-  } else if(timeleft == 'reset' && $('body').css('animation-iteration-count') == 'infinite'){
-    $('body').css('animation-iteration-count', 0);
-    $('#fullscreen-container').css('animation-iteration-count', 0);
+  if(timeleft < alarms[3]*1000 && $('body').css('animation-name') !== 'backgroundpulse'){
+    $('body').css('animation-name', 'backgroundpulse');
+    $('#fullscreen-container').css('animation-name', 'backgroundpulse');
+  } else if(timeleft == 'reset' && $('body').css('animation-name') == 'backgroundpulse'){
+    $('body').css('animation-name', 'none');
+    $('#fullscreen-container').css('animation-name', 'none');
   }
 }
 
