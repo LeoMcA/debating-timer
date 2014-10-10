@@ -178,8 +178,6 @@ $('#settings-modal').on('hide.bs.modal', function(){
 
 $('#fullscreen').click(function(){
   if($(this).attr('title') == 'Fullscreen'){
-    $(this).button('toggle');
-    $(this).attr('title', 'Exit Fullscreen');
     var elem = $('#fullscreen-container').get(0);
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
@@ -191,8 +189,6 @@ $('#fullscreen').click(function(){
       elem.webkitRequestFullscreen();
     }
   } else {
-    $(this).button('toggle');
-    $(this).attr('title', 'Fullscreen');
     if (document.exitFullscreen) {
       document.exitFullscreen();
     } else if (document.msExitFullscreen) {
@@ -202,6 +198,46 @@ $('#fullscreen').click(function(){
     } else if (document.webkitExitFullscreen) {
       document.webkitExitFullscreen();
     }
+  }
+});
+
+document.addEventListener('fullscreenchange', function(){
+  if(document.fullscreenElement){
+    $('#fullscreen').button('toggle');
+    $('#fullscreen').attr('title', 'Exit Fullscreen');
+  } else if(!document.fullscreenElement) {
+    $('#fullscreen').button('toggle');
+    $('#fullscreen').attr('title', 'Fullscreen');
+  }
+});
+
+document.addEventListener('MSFullscreenChange', function(){
+  if(document.msFullscreenElement){
+    $('#fullscreen').button('toggle');
+    $('#fullscreen').attr('title', 'Exit Fullscreen');
+  } else if(!document.msFullscreenElement) {
+    $('#fullscreen').button('toggle');
+    $('#fullscreen').attr('title', 'Fullscreen');
+  }
+});
+
+document.addEventListener('mozfullscreenchange', function(){
+  if(document.mozFullScreenElement){
+    $('#fullscreen').button('toggle');
+    $('#fullscreen').attr('title', 'Exit Fullscreen');
+  } else if(!document.mozFullScreenElement) {
+    $('#fullscreen').button('toggle');
+    $('#fullscreen').attr('title', 'Fullscreen');
+  }
+});
+
+document.addEventListener('webkitfullscreenchange', function(){
+  if(document.webkitFullscreenElement){
+    $('#fullscreen').button('toggle');
+    $('#fullscreen').attr('title', 'Exit Fullscreen');
+  } else if(!document.webkitFullscreenElement) {
+    $('#fullscreen').button('toggle');
+    $('#fullscreen').attr('title', 'Fullscreen');
   }
 });
 
