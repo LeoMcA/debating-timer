@@ -36,6 +36,7 @@
             <div class="btn-group pull-right">
               <button ng-click="buttons.bell()" id="test-bell" class="btn btn-default" title="Test Bell"><span class="glyphicon glyphicon-bell"></span></button>
               <button ng-click="buttons.mute()" id="mute" class="btn btn-default" title="Mute"><span class="glyphicon glyphicon-volume-off"></span></button>
+              <button id="debaters" class="btn btn-default" title="Debaters" data-toggle="modal" data-target="#debaters-modal"><span class="glyphicon glyphicon-user"></span></button>
               <button id="settings" class="btn btn-default" title="Settings" data-toggle="modal" data-target="#settings-modal"><span class="glyphicon glyphicon-cog"></span></button>
               <button ng-click="buttons.fullscreen()" id="fullscreen" class="btn btn-default" title="Fullscreen"><span class="glyphicon glyphicon-fullscreen"></span></button>
             </div>
@@ -48,7 +49,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title" id="myModalLabel">Settings</h4>
+              <h4 class="modal-title">Settings</h4>
             </div>
             <div class="modal-body">
               <form class="form-horizontal" role="form">
@@ -110,6 +111,40 @@
             </div>
             <div class="modal-footer">
               <button ng-click="settings.set(main)" type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div ng-controller="DebatersController as debaters" class="modal fade" id="debaters-modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Debaters</h4>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal" role="form">
+
+                <div ng-repeat="debater in debaters.debaters" class="form-group">
+                  <label for="name-input" class="col-sm-2 control-label">{{ debater.team }}</label>
+                  <div class="col-sm-5">
+                      <input ng-model="debater.name" type="text" class="form-control" id="name-input" placeholder="Name">
+                  </div>
+                  <div class="col-sm-5">
+                    <div class="input-group">
+                      <span class="input-group-addon">Weight</span>
+                      <input ng-model="debater.weight" type="number" min="1" max="4" step="1" class="form-control" value="1">
+                    </div>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button ng-click="debaters.add()" type="button" class="btn btn-secondary">Add Debater</button>
+              <button ng-click="debaters.remove()" type="button" class="btn btn-secondary">Remove Debater</button>
+              <button ng-click="debaters.assign()" type="button" class="btn btn-primary">Assign Teams</button>
             </div>
           </div>
         </div>

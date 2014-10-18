@@ -139,6 +139,66 @@ app.controller("SettingsController", function(){
   }
 });
 
+app.controller("DebatersController", function(){
+  this.debaters = [];
+  for(i = 0; i < 8; i++){
+    this.debaters.push({
+      team: "",
+      name: "",
+      weight: 1
+    });
+  }
+
+  this.add = function(){
+    this.debaters.push({
+      team: "",
+      name: "",
+      weight: 1
+    });
+  }
+
+  this.remove = function(){
+    this.debaters.pop();
+  }
+
+  function assign(debaters){
+    var totalProp = Math.ceil(debaters.length/2);
+    var totalOp = Math.floor(debaters.length/2);
+    var currentProp = 0;
+    var currentOp = 0;
+    var totalWeight = 0;
+    var weights = 0;
+    debaters.forEach(function(debater){
+      totalWeight += debater.weight;
+      if(Math.random() < 0.5){
+        if(currentProp < totalProp){
+          debater.team = "Prop";
+          currentProp++;
+          weights += debater.weight;
+        } else {
+          debater.team = "Op";
+          currentOp++;
+        }
+      } else {
+        if(currentOp < totalOp){
+          debater.team = "Op";
+          currentOp++;
+        } else {
+          debater.team = "Prop";
+          currentProp++;
+          weights += debater.weight;
+        }
+      }
+    });
+    if(Math.pow((weights - totalWeight/2), 2) > 0.25) return assign(debaters);
+    else return debaters;
+  }
+
+  this.assign = function(){
+    this.debaters = assign(this.debaters);
+  }
+});
+
 function centre(){
   var margin = ($(window).height() - $('.progress').outerHeight())/2 + $('.container').offset().top - $('.progress').offset().top;
   if(margin < 0) margin = 0;
