@@ -1,48 +1,232 @@
-function centreVertically(){
+var app = angular.module('app', []);
+
+app.controller('MainController', ['$interval', function($interval){
+
+  this.Timer = function(duration, alarms){
+    this.initduration = duration;
+    this.duration = duration;
+    this.now = duration;
+    this.alarmno = 0;
+    if(alarms){
+      this.alarms = alarms;
+    } else {
+      this.alarms = [];
+    }
+    updateProgressbar(this.initduration, this.duration, this.alarms);
+    $('#settings').removeAttr('disabled');
+  }
+
+  this.Timer.prototype.play = function(){
+    if(this.now < this.duration) this.duration = this.now;
+
+    this.start = new Date().getTime();
+
+    var that = this;
+
+    this.interval = $interval(function() {
+      that.now = that.duration-(new Date().getTime()-that.start);
+      if(that.now <= that.alarms[that.alarmno]){
+        ding();
+        that.alarmno++;
+      }
+      if(that.now <= 0) updateFlashing(that.now, that.alarms);
+      updateProgressbar(that.initduration, that.now, that.alarms);
+    },1);
+  }
+
+  this.Timer.prototype.pause = function(){
+    $interval.cancel(this.interval);
+  }
+
+  this.Timer.prototype.reset = function(){
+    $('.progress-bar').css('width', '0');
+    $interval.cancel(this.interval);
+    this.duration = this.initduration;
+    this.alarmno = 0;
+    this.now = this.duration;
+    updateFlashing(this.now, this.alarms);
+    changePlayPause('play');
+    $('#settings').removeAttr('disabled');
+  }
+
+  this.timer = new this.Timer(5 * 60 * 1000, [4 * 60 * 1000, 1 * 60 * 1000, 0, -15 * 1000]);
+}]);
+
+app.filter('minutes', function(){
+  return function(input){
+    if(input > 0) return Math.floor(Math.ceil(input/1000)/60);
+    else return Math.floor(input/-60000);
+  }
+});
+
+app.filter('seconds', function(){
+  return function(input){
+    if(input > 0) return ('0' + (Math.ceil(input/1000) % 60)).slice(-2);
+    else return ('0' + (Math.floor(input/-1000) % 60)).slice(-2);
+  }
+});
+
+app.controller('ButtonsController', function(){
+
+  this.play = function(main){
+    if($('#play-pause').attr('title') == 'Play'){
+      main.timer.play();
+      changePlayPause('pause');
+      $('#settings').attr('disabled', 'disabled');
+    } else {
+      main.timer.pause();
+      changePlayPause('play');
+    }
+  }
+
+  this.reset = function(main){
+    main.timer.reset();
+  }
+
+  this.bell = function(){
+    ding();
+  }
+
+  this.mute = function(){
+    if($('#mute').attr('title') == 'Mute'){
+      $('audio').attr('muted', 'muted');
+      $('#mute').attr('title', 'Unmute');
+      $('#mute').button('toggle');
+      $('#test-bell').attr('disabled', 'disabled');
+    } else {
+      $('audio').removeAttr('muted');
+      $('#mute').attr('title', 'Mute');
+      $('#mute').button('toggle');
+      $('#test-bell').removeAttr('disabled');
+    }
+  }
+
+  this.fullscreen = function(){
+    if($('#fullscreen').attr('title') == 'Fullscreen'){
+      var elem = $('#fullscreen-container').get(0);
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
+  }
+
+});
+
+app.controller("SettingsController", function(){
+  this.set = function(main){
+    $('#motion').text($('#motion-input').val());
+    var duration = Math.floor(parseInt($('#timer-minutes-input').val(), 10) * 60 + parseInt($('#timer-seconds-input').val() ,10)) * 1000;
+    var protectedLength = Math.floor(parseInt($('#protected-minutes-input').val(), 10) * 60 + parseInt($('#protected-seconds-input').val() ,10)) * 1000;
+    var grace = -1 * Math.floor(parseInt($('#grace-minutes-input').val(), 10) * 60 + parseInt($('#grace-seconds-input').val() ,10)) * 1000;
+    var alarms = [duration - protectedLength, protectedLength, 0, grace];
+    main.timer = new main.Timer(duration, alarms);
+  }
+});
+
+app.controller("DebatersController", function(){
+  this.debaters = [];
+  for(i = 0; i < 8; i++){
+    this.debaters.push({
+      team: "",
+      name: "",
+      weight: 1
+    });
+  }
+
+  this.add = function(){
+    this.debaters.push({
+      team: "",
+      name: "",
+      weight: 1
+    });
+  }
+
+  this.remove = function(){
+    this.debaters.pop();
+  }
+
+  function assign(debaters){
+    var totalProp = Math.ceil(debaters.length/2);
+    var totalOp = Math.floor(debaters.length/2);
+    var currentProp = 0;
+    var currentOp = 0;
+    var totalWeight = 0;
+    var weights = 0;
+    debaters.forEach(function(debater){
+      totalWeight += debater.weight;
+      if(Math.random() < 0.5){
+        if(currentProp < totalProp){
+          debater.team = "Prop";
+          currentProp++;
+          weights += debater.weight;
+        } else {
+          debater.team = "Op";
+          currentOp++;
+        }
+      } else {
+        if(currentOp < totalOp){
+          debater.team = "Op";
+          currentOp++;
+        } else {
+          debater.team = "Prop";
+          currentProp++;
+          weights += debater.weight;
+        }
+      }
+    });
+    if(Math.pow((weights - totalWeight/2), 2) > 0.25) return assign(debaters);
+    else return debaters;
+  }
+
+  this.assign = function(){
+    this.debaters = assign(this.debaters);
+  }
+});
+
+function centre(){
   var margin = ($(window).height() - $('.progress').outerHeight())/2 + $('.container').offset().top - $('.progress').offset().top;
   if(margin < 0) margin = 0;
   $('.container').css('margin-top', margin);
-}
-centreVertically();
-
-$(window).resize(centreVertically);
-
-function centreHorizontally(){
   $('#minutes').css('padding-left', $('.unit:last').outerWidth() + 20);
 }
-centreHorizontally();
 
-$(window).resize(centreHorizontally);
-
-function updateTimer(timeleft, negative){
-  var minutes = Math.floor(timeleft/60);
-  var seconds = timeleft % 60;
-
-  if(negative && !($('#timer').css('color') == '#c00' || $('#timer').css('color') == '#cc0000' || $('#timer').css('color') == 'rgb(204, 0, 0)')) $('#timer').css('color', '#c00');
-  else if(!negative && !($('#timer').css('color') == '#333' || $('#timer').css('color') == '#333333' || $('#timer').css('color') == 'rgb(51, 51, 51)')) $('#timer').css('color', '#333');
-
-  $('#minutes').text(minutes);
-  $('#seconds').text(('0' + seconds).slice(-2));
-}
+$(window).resize(centre);
+$(function(){ centre(); });
 
 function updateProgressbar(duration, timeleft, alarms){
-  if(timeleft >= 0){
-    if(timeleft >= alarms[0]*1000) $('#first-protected-progress').css('width', (duration - timeleft)*100/duration + '%');
-    else if(timeleft <= alarms[1]*1000) $('#last-protected-progress').css('width', (alarms[1]*1000 - timeleft)*100/duration + '%');
-    else $('#main-progress').css('width', (alarms[0]*1000 - timeleft)*100/duration +  '%');
-  } else if(timeleft > alarms[3]*1000) {
-    $('#finished-progress-striped').css('width', timeleft/(alarms[3]*10) + '%');
-    $('#finished-progress').css('width', 100 - timeleft/(alarms[3]*10) + '%');
+  if(timeleft > 0){
+    if(timeleft > alarms[0]) $('#first-protected-progress').css('width', (duration - timeleft)*100/duration + '%');
+    else if(timeleft <= alarms[1]) $('#last-protected-progress').css('width', (alarms[1] - timeleft)*100/duration + '%');
+    else $('#main-progress').css('width', (alarms[0] - timeleft)*100/duration +  '%');
+  } else if(timeleft > alarms[3]) {
+    $('#finished-progress-striped').css('width', timeleft/(alarms[3]/100) + '%');
+    $('#finished-progress').css('width', 100 - timeleft/(alarms[3]/100) + '%');
   } else {
     if($('#finished-progress-striped').get(0).style.width !== '100%') $('#finished-progress-striped').css('width', '100%');
   }
 }
 
 function updateFlashing(timeleft, alarms){
-  if(timeleft < alarms[3]*1000 && $('body').css('animation-name') !== 'backgroundpulse'){
+  if(timeleft <= alarms[3] && $('body').css('animation-name') !== 'backgroundpulse'){
     $('body').css('animation-name', 'backgroundpulse');
     $('#fullscreen-container').css('animation-name', 'backgroundpulse');
-  } else if(timeleft == 'reset' && $('body').css('animation-name') == 'backgroundpulse'){
+  } else if(timeleft > alarms[3] && $('body').css('animation-name') == 'backgroundpulse'){
     $('body').css('animation-name', 'none');
     $('#fullscreen-container').css('animation-name', 'none');
   }
@@ -67,139 +251,6 @@ function ding(){
     $('audio').get(0).play();
   }
 }
-
-function Timer(duration, alarms){
-  this.initduration = duration;
-  this.initdurationms = duration * 1000;
-  this.duration = duration;
-  this.durationms = duration * 1000;
-  this.alarmno = 0;
-  if(alarms){
-    this.alarms = alarms;
-  } else {
-    this.alarms = [];
-  }
-  updateTimer(this.duration);
-  updateProgressbar(this.initdurationms, this.durationms, this.alarms);
-  $('#settings').removeAttr('disabled');
-}
-
-var timer = new Timer(5 * 60, [4 * 60, 1 * 60, 0, -15]);
-
-Timer.prototype.play = function(){
-  if(this.nowms == 'reset'){
-    this.duration = this.initduration;
-    this.durationms = this.duration * 1000;
-    this.alarmno = 0;
-  } else if(this.nowms < this.durationms) {
-    this.duration = this.now;
-    this.durationms = this.nowms;
-  }
-
-  this.start = new Date().getTime();
-
-  var that = this;
-
-  this.interval = setInterval(function() {
-    that.nowms = that.durationms-(new Date().getTime()-that.start);
-    that.now = Math.ceil(that.nowms/1000);
-    if(that.nowms <= that.alarms[that.alarmno] * 1000){
-      ding();
-      that.alarmno++;
-    }
-    if(that.nowms <= 0) {
-      updateTimer(that.now * -1, true);
-      updateProgressbar(that.initdurationms, that.nowms, that.alarms);
-      updateFlashing(that.nowms, that.alarms);
-    }
-    else {
-      updateTimer(that.now);
-      updateProgressbar(that.initdurationms, that.nowms, that.alarms);
-    }
-  },1);
-}
-
-Timer.prototype.pause = function(){
-  window.clearInterval(this.interval);
-}
-
-Timer.prototype.reset = function(){
-  $('.progress-bar').css('width', '0');
-  window.clearInterval(this.interval);
-  updateTimer(this.initduration);
-  this.nowms = 'reset';
-  updateFlashing(this.nowms, this.alarms);
-  changePlayPause('play');
-  $('#settings').removeAttr('disabled');
-}
-
-$('#play-pause').click(function(){
-  if($(this).attr('title') == 'Play'){
-    timer.play();
-    changePlayPause('pause');
-    $('#settings').attr('disabled', 'disabled');
-  } else {
-    timer.pause();
-    changePlayPause('play');
-  }
-});
-
-$('#reset').click(function(){
-  timer.reset();
-});
-
-$('#test-bell').click(function(){
-  ding();
-});
-
-$('#mute').click(function(){
-  if($(this).attr('title') == 'Mute'){
-    $('audio').attr('muted', 'muted');
-    $(this).attr('title', 'Unmute');
-    $(this).button('toggle');
-    $('#test-bell').attr('disabled', 'disabled');
-  } else {
-    $('audio').removeAttr('muted');
-    $(this).attr('title', 'Mute');
-    $(this).button('toggle');
-    $('#test-bell').removeAttr('disabled');
-  }
-});
-
-$('#settings-modal').on('hide.bs.modal', function(){
-  $('#motion').text($('#motion-input').val());
-  var duration = Math.floor(parseInt($('#timer-minutes-input').val(), 10) * 60 + parseInt($('#timer-seconds-input').val() ,10));
-  var protectedLength = Math.floor(parseInt($('#protected-minutes-input').val(), 10) * 60 + parseInt($('#protected-seconds-input').val() ,10));
-  var grace = -1 * Math.floor(parseInt($('#grace-minutes-input').val(), 10) * 60 + parseInt($('#grace-seconds-input').val() ,10))
-  var alarms = [duration - protectedLength, protectedLength, 0, grace];
-  timer = new Timer(duration, alarms);
-  centreVertically();
-});
-
-$('#fullscreen').click(function(){
-  if($(this).attr('title') == 'Fullscreen'){
-    var elem = $('#fullscreen-container').get(0);
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    } else if (elem.msRequestFullscreen) {
-      elem.msRequestFullscreen();
-    } else if (elem.mozRequestFullScreen) {
-      elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) {
-      elem.webkitRequestFullscreen();
-    }
-  } else {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    } else if (document.msExitFullscreen) {
-      document.msExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    } else if (document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    }
-  }
-});
 
 document.addEventListener('fullscreenchange', function(){
   if(document.fullscreenElement){
@@ -241,10 +292,10 @@ document.addEventListener('webkitfullscreenchange', function(){
   }
 });
 
-var socket = io('http://'+window.location.hostname);
+/*var socket = io('http://'+window.location.hostname);
 socket.on('play-pause', function(){
   $('#play-pause').click();
 });
 socket.on('reset', function(){
   $('#reset').click();
-});
+});*/

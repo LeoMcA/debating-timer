@@ -39,6 +39,10 @@ body, #fullscreen-container {
   transition: none;
 }
 
+.negative {
+  color: #c00;
+}
+
 @keyframes backgroundpulse {
   0% {
     background-color: #fff;

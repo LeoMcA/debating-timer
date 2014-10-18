@@ -1,20 +1,20 @@
 <!doctype html>
-<html>
+<html ng-app="app">
   <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="stylesheet" href="libs/bootstrap-3.2.0-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
   <title>Debating Timer</title>
   </head>
-  <body>
+  <body ng-controller="MainController as main">
 
     <div id="fullscreen-container">
       <div class="container">
 
         <div id="motion"></div>
 
-        <div id="timer">
-          <span id="minutes" class="digits">0</span><span class="unit">m</span><span id="seconds" class="digits">00</span><span class="unit">s</span>
+        <div ng-class="{ negative: main.timer.now <= 0 }" id="timer">
+          <span id="minutes" class="digits">{{ main.timer.now | minutes }}</span><span class="unit">m</span><span id="seconds" class="digits">{{ main.timer.now | seconds }}</span><span class="unit">s</span>
         </div>
 
         <div class="progress">
@@ -25,30 +25,31 @@
           <div id="last-protected-progress" class="progress-bar progress-bar-warning"></div>
         </div>
 
-        <div class="row">
+        <div ng-controller="ButtonsController as buttons" class="row">
           <div class="col-xs-6">
             <div class="btn-group">
-              <button id="play-pause" class="btn btn-default" title="Play"><span class="glyphicon glyphicon-play"></span><span class="glyphicon glyphicon-pause" style="display:none;"></span></button>
-              <button id="reset" class="btn btn-default" title="Reset"><span class="glyphicon glyphicon-refresh"></span></button>
+              <button ng-click="buttons.play(main)" id="play-pause" class="btn btn-default" title="Play"><span class="glyphicon glyphicon-play"></span><span class="glyphicon glyphicon-pause" style="display:none;"></span></button>
+              <button ng-click="buttons.reset(main)" id="reset" class="btn btn-default" title="Reset"><span class="glyphicon glyphicon-refresh"></span></button>
             </div>
           </div>
           <div class="col-xs-6">
             <div class="btn-group pull-right">
-              <button id="test-bell" class="btn btn-default" title="Test Bell"><span class="glyphicon glyphicon-bell"></span></button>
-              <button id="mute" class="btn btn-default" title="Mute"><span class="glyphicon glyphicon-volume-off"></span></button>
+              <button ng-click="buttons.bell()" id="test-bell" class="btn btn-default" title="Test Bell"><span class="glyphicon glyphicon-bell"></span></button>
+              <button ng-click="buttons.mute()" id="mute" class="btn btn-default" title="Mute"><span class="glyphicon glyphicon-volume-off"></span></button>
+              <button id="debaters" class="btn btn-default" title="Debaters" data-toggle="modal" data-target="#debaters-modal"><span class="glyphicon glyphicon-user"></span></button>
               <button id="settings" class="btn btn-default" title="Settings" data-toggle="modal" data-target="#settings-modal"><span class="glyphicon glyphicon-cog"></span></button>
-              <button id="fullscreen" class="btn btn-default" title="Fullscreen"><span class="glyphicon glyphicon-fullscreen"></span></button>
+              <button ng-click="buttons.fullscreen()" id="fullscreen" class="btn btn-default" title="Fullscreen"><span class="glyphicon glyphicon-fullscreen"></span></button>
             </div>
           </div>
         </div>
 
       </div>
 
-      <div class="modal fade" id="settings-modal" tabindex="-1">
+      <div ng-controller="SettingsController as settings" class="modal fade" id="settings-modal" tabindex="-1">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h4 class="modal-title" id="myModalLabel">Settings</h4>
+              <h4 class="modal-title">Settings</h4>
             </div>
             <div class="modal-body">
               <form class="form-horizontal" role="form">
@@ -109,7 +110,41 @@
               </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+              <button ng-click="settings.set(main)" type="button" class="btn btn-primary" data-dismiss="modal">Done</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div ng-controller="DebatersController as debaters" class="modal fade" id="debaters-modal" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Debaters</h4>
+            </div>
+            <div class="modal-body">
+              <form class="form-horizontal" role="form">
+
+                <div ng-repeat="debater in debaters.debaters" class="form-group">
+                  <label for="name-input" class="col-sm-2 control-label">{{ debater.team }}</label>
+                  <div class="col-sm-5">
+                      <input ng-model="debater.name" type="text" class="form-control" id="name-input" placeholder="Name">
+                  </div>
+                  <div class="col-sm-5">
+                    <div class="input-group">
+                      <span class="input-group-addon">Weight</span>
+                      <input ng-model="debater.weight" type="number" min="1" max="4" step="1" class="form-control" value="1">
+                    </div>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button ng-click="debaters.add()" type="button" class="btn btn-secondary">Add Debater</button>
+              <button ng-click="debaters.remove()" type="button" class="btn btn-secondary">Remove Debater</button>
+              <button ng-click="debaters.assign()" type="button" class="btn btn-primary">Assign Teams</button>
             </div>
           </div>
         </div>
@@ -123,9 +158,10 @@
       <source src="audio/ding.wav">
     </audio>
 
+    <script src="libs/angular-1.2.26/angular.min.js"></script>
     <script src="libs/jquery-1.11.1.min.js"></script>
     <script src="libs/bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
-    <script src="socket.io/socket.io.js"></script>
+    <!--<script src="socket.io/socket.io.js"></script>-->
     <script src="script.js"></script>
   </body>
 </html>
