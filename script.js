@@ -131,6 +131,7 @@ app.controller('ButtonsController', function(){
 app.controller("SettingsController", function(){
   this.set = function(main){
     $('#motion').text($('#motion-input').val());
+    centre();
     var duration = Math.floor(parseInt($('#timer-minutes-input').val(), 10) * 60 + parseInt($('#timer-seconds-input').val() ,10)) * 1000;
     var protectedLength = Math.floor(parseInt($('#protected-minutes-input').val(), 10) * 60 + parseInt($('#protected-seconds-input').val() ,10)) * 1000;
     var grace = -1 * Math.floor(parseInt($('#grace-minutes-input').val(), 10) * 60 + parseInt($('#grace-seconds-input').val() ,10)) * 1000;
