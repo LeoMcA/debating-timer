@@ -50,6 +50,10 @@ app.controller('MainController', ['$interval', function($interval){
   }
 
   this.timer = new this.Timer(5 * 60 * 1000, [4 * 60 * 1000, 1 * 60 * 1000, 0, -15 * 1000]);
+  
+  this.centre = function(){
+    centre();
+  }
 }]);
 
 app.filter('minutes', function(){
@@ -130,7 +134,6 @@ app.controller('ButtonsController', function(){
 
 app.controller("SettingsController", function(){
   this.set = function(main){
-    $('#motion').text($('#motion-input').val());
     centre();
     var duration = Math.floor(parseInt($('#timer-minutes-input').val(), 10) * 60 + parseInt($('#timer-seconds-input').val() ,10)) * 1000;
     var protectedLength = Math.floor(parseInt($('#protected-minutes-input').val(), 10) * 60 + parseInt($('#protected-seconds-input').val() ,10)) * 1000;
@@ -202,6 +205,7 @@ app.controller("DebatersController", function(){
 
 function centre(){
   var margin = ($(window).height() - $('.progress').outerHeight())/2 + $('.container').offset().top - $('.progress').offset().top;
+  console.log(margin, $('.container').offset().top);
   if(margin < 0) margin = 0;
   $('.container').css('margin-top', margin);
   $('#minutes').css('padding-left', $('.unit:last').outerWidth() + 20);

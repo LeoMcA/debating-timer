@@ -11,7 +11,7 @@
     <div id="fullscreen-container">
       <div class="container">
 
-        <div id="motion"></div>
+        <div id="motion">{{ main.motion }}</div>
 
         <div ng-class="{ negative: main.timer.now <= 0 }" id="timer">
           <span id="minutes" class="digits">{{ main.timer.now | minutes }}</span><span class="unit">m</span><span id="seconds" class="digits">{{ main.timer.now | seconds }}</span><span class="unit">s</span>
@@ -56,7 +56,7 @@
                 <div class="form-group">
                   <label for="motion-input" class="col-sm-2 control-label">Motion</label>
                   <div class="col-sm-10">
-                    <input type="text" class="form-control" id="motion-input" placeholder="Motion">
+                    <input ng-model="main.motion" ng-change="main.centre()" type="text" class="form-control" id="motion-input" placeholder="Motion">
                   </div>
                 </div>
 
