@@ -1,0 +1,2 @@
+/p/event https://leo.mca.is/api/event 200
+/p/* https://leo.mca.is/js/:splat 200
